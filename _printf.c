@@ -1,86 +1,72 @@
 #include "main.h"
 
 /**
- * _printf - prints formatted string
- * @f: formatter
- * @... : chars to be printed
- * Return : int
- */ 
-
-int _printf(const char *format, ...);
-void clean(va_list args, buffer_t *output);
-int printf_exec(const char *format, va_list args, buffer_t *output);
-
-void clean(va_list args, buffer_t *output)
-{
-va_end(args);
-write(1, output->start, output->len);
-free_buffer(output);
-}
-/**
- * printf_exec - 
+ * _putchar - writes the character c to stdout
+ * @c: The character to print
  *
- *
- *
- *
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
+int _putchar(char c)
+{
+return (write(1, &c, 1));
+}
 
-int printf_exec(const char *format, va_list args, buffer_t *output)
-{
-char temp;
-int rtn =0;
-int i =0;
-int wid = 0;
-int prec = 0;
-unsigned char flags, len;
-unsigned int (*spec)(va_list, buffer_t *, unsigned char, int, int, unsigned char);
-for (temp = 0; *(format + i); i++)
-{
-len = 0;
-if (*(format + i) == '%')
-{
-prec = prec_handle(args, format + i + temp + 1, &temp);
-flags = flags_handle(format + i + 1, &temp);
-wid = wid_handle(args, format + i + temp + 1, &temp);
-len = len_handle(format + i + temp +1, &temp);
-spec = spec_handle(format + i + temp + 1);
-if (spec != NULL)
-{
-i += temp + 1;
-rtn += spec(args, output, flags, wid, prec, len);
-continue;
-}
-else if (*(format + i + temp + 1) == '\0')
-{
-rtn = -1;
-break;
-}
-}
-rtn += _memcpy(output, (format + i), 1);
-i += (len != 0) ? 1 : 0;
-}
-clean(args, output);
-return (rtn);
-}
+
+/**
+ * _printf - prints formatted string
+ * @f: formatted string
+ * @... : char formats/variables
+ * Return : int, 0 if succesful else NULL
+ */ 
 
 int _printf(const char *format, ...)
 {
-buffer_t *output;
+int i = 0;
+int j;
+
 va_list args;
-int rtn;
-
-if (format == NULL)
-{
-return (-1);
-}
-output = init_buffer();
-if (output == NULL)
-{
-return (-1);
-}
 va_start(args, format);
-rtn = printf_exec(format, args, output);
 
-return (rtn);
-
+for (; format[i];)
+{
+if (format[i] == '%')
+{
+i++;
+/*Check the formatter */
+switch(format[i])
+{
+case 'c':
+{
+char *c = va_arg(args, char*);
+_putchar(c);
+break;
+}
+case 's':
+{
+char *c[] = va_arg(args, char*);
+for (j = 0; *c[j] != '\0'; j++)
+{
+_putchar(*c[j]);
+}
+break;
+}
+default:
+{
+_putchar('%');
+_putchar(format[i]);
+break;
+}
+}
+}
+else if (format[i] == '\0')
+{
+break;
+}
+else
+{
+_putchar(format[i]);
+}
+}
+return (0);
 }
