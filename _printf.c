@@ -13,6 +13,8 @@ static int (*check_for_specifiers(const char *format))(va_list)
 	print_t p[] = {
 		{"c", print_c},
 		{"s", print_s},
+		{"i", print_i},
+		{"d", print_d},
 		{NULL, NULL}
 	};
 
