@@ -39,12 +39,13 @@ switch(format[i])
 case 'c':
 {
 char *c = va_arg(args, char*);
-_putchar(c);
+_putchar(*c);
 break;
 }
 case 's':
 {
-char *c[] = va_arg(args, char*);
+char *c[999];
+*c = va_arg(args, char*);
 for (j = 0; *c[j] != '\0'; j++)
 {
 _putchar(*c[j]);
